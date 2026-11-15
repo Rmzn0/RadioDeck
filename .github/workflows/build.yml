@@ -1,0 +1,37 @@
+name: build
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build
+        run: dotnet build .\RadioDeck.csproj -c Release
+
+      # The regression suite talks only to simulated radios on 127.0.0.1.
+      - name: Regression checks
+        run: dotnet run --project .\tests\PttRegression\PttRegression.csproj -c Release
+
+      - name: Publish (self-contained, win-x64)
+        run: dotnet publish .\RadioDeck.csproj -c Release -r win-x64 --self-contained true -o publish /p:PublishSingleFile=false
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: RadioDeck-win-x64
+          path: publish
+          if-no-files-found: error

@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.17763.0</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <DefaultItemExcludes>$(DefaultItemExcludes);artifacts\**;tests\**;local\**;sessions\**;docs\**</DefaultItemExcludes>
+
+    <!-- Assembly / installer metadata. -->
+    <AssemblyName>RadioDeck</AssemblyName>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Product>RadioDeck</Product>
+    <Description>PC console for ED-137 style VoIP air-ground radios</Description>
+    <!-- Shown next to the version in the footer of the main window. -->
+    <Company>M. Ramazan Öztürk</Company>
+    <Copyright>Copyright © 2026 M. Ramazan Öztürk. MIT License.</Copyright>
+    <ApplicationIcon>radio.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <!-- Don't ship debug symbols in release builds. -->
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="5.2.1" />
+    <PackageReference Include="NAudio.WinMM" Version="2.2.1" />
+    <!-- Pinned: 10.0.17 contains the fixes for GHSA-28gm-jrmw-xx93 and GHSA-jwjp-4649-v8jp, and the
+         engine relies on internals of exactly this version (see the regression tests). -->
+    <PackageReference Include="SIPSorcery" Version="10.0.17" />
+    <!-- Pin patched minima pulled in by the legacy mDNS dependency. .NET 8 supplies runtime assets. -->
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="radio.ico" />
+    <Resource Include="radio.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- The licenses of this program and of the libraries it ships with must accompany every copy. -->
+    <None Include="LICENSE" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" TargetPath="LICENSE.txt" />
+    <None Include="THIRD-PARTY-NOTICES.md" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" TargetPath="THIRD-PARTY-NOTICES.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Localization\*.json" />
+  </ItemGroup>
+</Project>

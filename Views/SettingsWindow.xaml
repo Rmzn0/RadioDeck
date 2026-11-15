@@ -1,0 +1,452 @@
+<Window x:Class="RadioDeck.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:RadioDeck.ViewModels"
+        xmlns:loc="clr-namespace:RadioDeck.Services.Localization"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="{loc:T Set_Title}"
+        FlowDirection="{Binding FlowDirection, Source={x:Static loc:LocSource.Instance}}"
+        Height="660"
+        Width="880"
+        MinHeight="520"
+        MinWidth="760"
+        Background="#121212"
+        Foreground="#E6E6E6"
+        FontFamily="Segoe UI"
+        WindowStartupLocation="CenterScreen"
+        ShowInTaskbar="True"
+        ShowActivated="True"
+        Icon="/radio.png">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
+
+        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="materialDesign:TextFieldAssist.CharacterCounterVisibility" Value="Collapsed"/>
+        </Style>
+        <Style TargetType="PasswordBox" BasedOn="{StaticResource {x:Type PasswordBox}}">
+            <Setter Property="materialDesign:TextFieldAssist.CharacterCounterVisibility" Value="Collapsed"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Foreground" Value="#9FB0BA"/>
+            <Setter Property="Margin" Value="0,10,0,3"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+        </Style>
+
+        <Style x:Key="Note" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11.5"/>
+            <Setter Property="Foreground" Value="#8899A6"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,4,0,0"/>
+        </Style>
+
+        <Style x:Key="Heading" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
+        <Style x:Key="Panel" TargetType="Border">
+            <Setter Property="Background" Value="#1A1D1E"/>
+            <Setter Property="BorderBrush" Value="#2A2D2E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="14"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TabControl Grid.Row="0" Background="Transparent" BorderThickness="0">
+
+            <!-- ============================ Radios ============================ -->
+            <TabItem Header="{loc:T Set_TabRadios}">
+                <Grid Margin="0,12,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource Panel}" Padding="8" Margin="0,0,12,0">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Margin="6,2,6,6" Foreground="#9FB0BA" FontSize="11.5"
+                                       TextWrapping="Wrap" Text="{Binding RadiosHeader}"/>
+                            <UniformGrid DockPanel.Dock="Bottom" Columns="2" Margin="0,8,0,0">
+                                <Button Content="{loc:T Set_Add}" Command="{Binding AddRadioCommand}" Margin="2" Padding="4,0"
+                                        ToolTip="{loc:T Set_TipAdd}"/>
+                                <Button Content="{loc:T Set_Remove}" Command="{Binding RemoveRadioCommand}" Margin="2" Padding="4,0"
+                                        ToolTip="{loc:T Set_TipRemove}"/>
+                                <Button Content="{loc:T Set_Up}" ToolTip="{loc:T Set_TipUp}" Command="{Binding MoveUpCommand}" Margin="2" Padding="4,0"/>
+                                <Button Content="{loc:T Set_Down}" ToolTip="{loc:T Set_TipDown}" Command="{Binding MoveDownCommand}" Margin="2" Padding="4,0"/>
+                            </UniformGrid>
+                            <ListBox ItemsSource="{Binding Radios}" SelectedItem="{Binding SelectedRadio}"
+                                     DisplayMemberPath="Title" Background="Transparent" BorderThickness="0"/>
+                        </DockPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource Panel}" Padding="0">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="14,6,14,14">
+                            <StackPanel DataContext="{Binding SelectedRadio}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_Name}"/>
+                                        <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" MaxLength="20"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_Connection}"/>
+                                        <ComboBox ItemsSource="{Binding LinkModeChoices}"
+                                                  DisplayMemberPath="Label" SelectedValuePath="Value"
+                                                  SelectedValue="{Binding LinkMode}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_RadioType}"/>
+                                <ComboBox ItemsSource="{Binding ProfileChoices}"
+                                          DisplayMemberPath="Label" SelectedValuePath="Value"
+                                          SelectedValue="{Binding Profile}"/>
+                                <TextBlock Style="{StaticResource Note}" Text="{Binding ProfileNote}"/>
+
+                                <Grid Visibility="{Binding ShowRx, Converter={StaticResource BoolToVisibility}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_RxAddress}"/>
+                                        <TextBox Text="{Binding RxHost, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_RxUser}"/>
+                                        <TextBox Text="{Binding RxUser, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Visibility="{Binding ShowTx, Converter={StaticResource BoolToVisibility}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{Binding TxHostLabel}"/>
+                                        <TextBox Text="{Binding TxHost, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{Binding TxUserLabel}"/>
+                                        <TextBox Text="{Binding TxUser, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SipPort}"/>
+                                        <TextBox Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}" MaxLength="5"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_Frequency}"/>
+                                        <TextBox Text="{Binding Frequency, UpdateSourceTrigger=PropertyChanged}" MaxLength="8"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="14"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{Binding VolumeLabel}"/>
+                                        <Slider Minimum="0" Maximum="200" SmallChange="5" LargeChange="20"
+                                                TickFrequency="5" IsSnapToTickEnabled="True" Value="{Binding RxVolume}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabel}" Text="{Binding BalanceLabel}"/>
+                                        <Slider Minimum="-100" Maximum="100" SmallChange="10" LargeChange="50"
+                                                TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding RxPan}"/>
+                                    </StackPanel>
+                                </Grid>
+                                <TextBlock Style="{StaticResource Note}"
+                                           Text="{loc:T Set_BalanceNote}"/>
+
+                                <Expander Header="{loc:T Set_Advanced}" Margin="0,14,0,0" Background="Transparent">
+                                    <StackPanel Margin="0,0,0,4">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="14"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpMode}"/>
+                                                <ComboBox ItemsSource="{Binding SnmpChoices}"
+                                                          DisplayMemberPath="Label" SelectedValuePath="Value"
+                                                          SelectedValue="{Binding Snmp}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpUnit}"/>
+                                                <ComboBox ItemsSource="{Binding SnmpUnitChoices}"
+                                                          DisplayMemberPath="Label" SelectedValuePath="Value"
+                                                          SelectedValue="{Binding SnmpUnit}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="14"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpOid}"/>
+                                                <TextBox Text="{Binding SnmpFrequencyOid, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Visibility="{Binding ShowTxOid, Converter={StaticResource BoolToVisibility}}">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpTxOid}"/>
+                                                <TextBox Text="{Binding SnmpTxFrequencyOid, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="14"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom" Visibility="{Binding ShowRx, Converter={StaticResource BoolToVisibility}}">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpRxHost}"/>
+                                                <TextBox Text="{Binding SnmpRxHost, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Visibility="{Binding ShowTx, Converter={StaticResource BoolToVisibility}}">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{Binding SnmpTxHostLabel}"/>
+                                                <TextBox Text="{Binding SnmpTxHost, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="14"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="14"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpCommunity}"/>
+                                                <TextBox Text="{Binding SnmpCommunity, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpPort}"/>
+                                                <TextBox Text="{Binding SnmpPort, UpdateSourceTrigger=PropertyChanged}" MaxLength="5"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="4" VerticalAlignment="Bottom">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SnmpVersion}"/>
+                                                <ComboBox ItemsSource="{Binding SnmpVersionChoices}"
+                                                          DisplayMemberPath="Label" SelectedValuePath="Value"
+                                                          SelectedValue="{Binding SnmpVersion}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <TextBlock Style="{StaticResource Note}" Text="{loc:T Set_SnmpNote}"/>
+                                        <DockPanel Margin="0,8,0,0" LastChildFill="True">
+                                            <Button DockPanel.Dock="Left" Content="{loc:T Set_SnmpTest}" MinWidth="110" Padding="10,0"
+                                                    VerticalAlignment="Top" Command="{Binding TestSnmpCommand}"/>
+                                            <TextBlock Margin="12,0,0,0" VerticalAlignment="Center" TextWrapping="Wrap"
+                                                       Foreground="#C8D3D9" Text="{Binding SnmpTestResult}"/>
+                                        </DockPanel>
+                                        <Grid Margin="0,10,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="14"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_Wg67}"/>
+                                                <TextBox Text="{Binding Wg67Version, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                                <TextBlock Style="{StaticResource Note}" Text="{Binding Wg67Hint}"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2">
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SipLogin}"/>
+                                                <TextBox Text="{Binding User, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                                <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Set_SipPassword}"/>
+                                                <TextBox Text="{Binding Pass, UpdateSourceTrigger=PropertyChanged}" FlowDirection="LeftToRight"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- ============================ PTT ============================ -->
+            <TabItem Header="{loc:T Set_TabPtt}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,12,0,0">
+                    <Border Style="{StaticResource Panel}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Ptt_KeyHeading}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                <TextBox x:Name="PttKeyBox" Width="150" IsReadOnly="True" Focusable="False"
+                                         Text="{Binding PttKey, Mode=OneWay}" VerticalAlignment="Center"/>
+                                <Button x:Name="CaptureButton" Content="{loc:T Ptt_Capture}" Margin="12,0,0,0" MinWidth="100" Padding="10,0"
+                                        Click="CapturePttKey_Click"/>
+                                <TextBlock x:Name="CaptureHint" Margin="12,0,0,0" VerticalAlignment="Center" Foreground="#FFB300"/>
+                            </StackPanel>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Ptt_KeyNote}"/>
+
+                            <CheckBox Content="{loc:T Ptt_HideKey}" Margin="0,14,0,0"
+                                      IsChecked="{Binding SuppressKey}"/>
+                            <TextBlock Style="{StaticResource Note}" Margin="24,2,0,0"
+                                       Text="{loc:T Ptt_HideKeyNote}"/>
+
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Ptt_Safety}" Margin="0,22,0,2"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Ptt_Limit}"/>
+                            <TextBox Width="150" HorizontalAlignment="Left" MaxLength="4"
+                                     Text="{Binding MaxTxSeconds, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Ptt_LimitNote}"/>
+
+                            <CheckBox Content="{loc:T Ptt_SingleTx}" Margin="0,14,0,0"
+                                      IsChecked="{Binding SingleTxAtATime}"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Ptt_ArbitrationLabel}" Margin="24,8,0,3"/>
+                            <ComboBox Margin="24,0,0,0" Width="460" HorizontalAlignment="Left"
+                                      IsEnabled="{Binding SingleTxAtATime}"
+                                      ItemsSource="{Binding ArbitrationChoices}"
+                                      DisplayMemberPath="Label" SelectedValuePath="Value"
+                                      SelectedValue="{Binding Arbitration}"/>
+
+                            <CheckBox Content="{loc:T Ptt_MuteRx}" Margin="0,14,0,0"
+                                      IsChecked="{Binding MuteRxWhileTx}"/>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ============================ Audio ============================ -->
+            <TabItem Header="{loc:T Set_TabAudio}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,12,0,0">
+                    <Border Style="{StaticResource Panel}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Audio_Devices}"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Audio_Microphone}"/>
+                            <ComboBox Width="460" HorizontalAlignment="Left"
+                                      ItemsSource="{Binding InputDevices}" SelectedItem="{Binding InputDevice}"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Audio_Speaker}"/>
+                            <ComboBox Width="460" HorizontalAlignment="Left"
+                                      ItemsSource="{Binding OutputDevices}" SelectedItem="{Binding OutputDevice}"/>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Audio_DeviceNote}"/>
+
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Audio_Transmit}" Margin="0,22,0,2"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Audio_NoiseReduction}"/>
+                            <ComboBox Width="460" HorizontalAlignment="Left"
+                                      ItemsSource="{Binding NoiseReductionChoices}"
+                                      DisplayMemberPath="Label" SelectedValuePath="Value"
+                                      SelectedValue="{Binding NoiseReduction}"/>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Audio_NrNote}"/>
+
+                            <CheckBox Content="{loc:T Audio_Gate}" Margin="0,14,0,0"
+                                      IsChecked="{Binding Vad}"/>
+                            <TextBlock Style="{StaticResource Note}" Margin="24,2,0,0"
+                                       Text="{loc:T Audio_GateNote}"/>
+
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Audio_Lead}"/>
+                            <TextBox Width="150" HorizontalAlignment="Left" MaxLength="4"
+                                     Text="{Binding TxLeadMs, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Audio_LeadNote}"/>
+
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Audio_Tail}"/>
+                            <TextBox Width="150" HorizontalAlignment="Left" MaxLength="4"
+                                     Text="{Binding TxTailMs, UpdateSourceTrigger=PropertyChanged}"/>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Audio_TailNote}"/>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ============================ General ============================ -->
+            <TabItem Header="{loc:T Set_TabGeneral}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0,12,0,0">
+                    <Border Style="{StaticResource Panel}">
+                        <StackPanel>
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Gen_Window}"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Gen_Language}"/>
+                            <ComboBox Width="460" HorizontalAlignment="Left"
+                                      ItemsSource="{Binding LanguageChoices}"
+                                      DisplayMemberPath="Label" SelectedValuePath="Value"
+                                      SelectedValue="{Binding Language}"/>
+                            <TextBlock Style="{StaticResource Note}" Text="{loc:T Gen_LanguageNote}"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Gen_View}"/>
+                            <ComboBox Width="460" HorizontalAlignment="Left"
+                                      ItemsSource="{Binding UiModeChoices}"
+                                      DisplayMemberPath="Label" SelectedValuePath="Value"
+                                      SelectedValue="{Binding UiMode}"/>
+                            <CheckBox Content="{loc:T Gen_OnTop}" Margin="0,12,0,0"
+                                      IsChecked="{Binding AlwaysOnTop}"/>
+                            <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Gen_Organization}"/>
+                            <TextBox Width="460" HorizontalAlignment="Left" MaxLength="40"
+                                     Text="{Binding Organization, UpdateSourceTrigger=PropertyChanged}"/>
+
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Gen_Connection}" Margin="0,22,0,2"/>
+                            <CheckBox Content="{loc:T Gen_AutoReconnect}" Margin="0,8,0,0"
+                                      IsChecked="{Binding AutoReconnect}"/>
+                            <CheckBox Content="{loc:T Gen_ConnectOnStartup}" Margin="0,8,0,0"
+                                      IsChecked="{Binding ConnectOnStartup}"/>
+
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Gen_PinHeading}" Margin="0,22,0,2"/>
+                            <TextBlock Style="{StaticResource Note}" Text="{Binding PinStatus}"/>
+                            <StackPanel Orientation="Horizontal">
+                                <StackPanel Width="223">
+                                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Gen_NewPin}"/>
+                                    <PasswordBox x:Name="NewPinBox" MaxLength="32" PasswordChanged="NewPin_Changed"/>
+                                </StackPanel>
+                                <StackPanel Width="223" Margin="14,0,0,0">
+                                    <TextBlock Style="{StaticResource FieldLabel}" Text="{loc:T Gen_RepeatPin}"/>
+                                    <PasswordBox x:Name="NewPinRepeatBox" MaxLength="32" PasswordChanged="NewPinRepeat_Changed"/>
+                                </StackPanel>
+                            </StackPanel>
+                            <CheckBox Content="{loc:T Gen_RemovePin}" Margin="0,10,0,0" IsChecked="{Binding RemovePin}"
+                                      Visibility="{Binding HasPin, Converter={StaticResource BoolToVisibility}}"/>
+                            <TextBlock Style="{StaticResource Note}"
+                                       Text="{loc:T Gen_PinNote}"/>
+
+                            <TextBlock Style="{StaticResource Heading}" Text="{loc:T Gen_Files}" Margin="0,22,0,2"/>
+                            <TextBox IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#9FB0BA"
+                                     Text="{Binding ConfigPath, Mode=OneWay}" TextWrapping="Wrap" FlowDirection="LeftToRight"/>
+                        </StackPanel>
+                    </Border>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
+        <Grid Grid.Row="1" Margin="0,12,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="{Binding ErrorText}" Foreground="#FF5252" FontWeight="SemiBold"
+                       TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,0,12,0"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="{loc:T Btn_Cancel}" IsCancel="True" Command="{Binding CancelCommand}" MinWidth="100" Margin="0,0,10,0"/>
+                <Button Content="{loc:T Btn_Save}" IsDefault="True" Command="{Binding SaveCommand}" MinWidth="100"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

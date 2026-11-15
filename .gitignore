@@ -1,0 +1,29 @@
+# Build output
+bin/
+obj/
+artifacts/
+publish/
+*.user
+*.suo
+*.DotSettings.user
+
+# Local tool folders (everything starting with a dot, except what the project needs)
+/.*/
+!/.github/
+!/.config/
+
+# Local working files that are not part of the project
+/local/
+/sessions/
+*.pdf
+*.mp4
+*.wav
+
+# Optional organisation logo for the footer (see README, "Files")
+logo.jfif
+logo.png
+logo.jpg
+
+# Windows
+Thumbs.db
+desktop.ini

@@ -1,0 +1,38 @@
+<Window x:Class="RadioDeck.Views.LogWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:loc="clr-namespace:RadioDeck.Services.Localization"
+        Title="{loc:T Log_Title}"
+        FlowDirection="{Binding FlowDirection, Source={x:Static loc:LocSource.Instance}}"
+        Width="980"
+        Height="560"
+        MinWidth="520"
+        MinHeight="300"
+        Background="#121212"
+        Foreground="#E6E6E6"
+        FontFamily="Segoe UI"
+        WindowStartupLocation="CenterScreen"
+        Icon="/radio.png">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBox x:Name="LogBox" Grid.Row="0"
+                 IsReadOnly="True" IsUndoEnabled="False" AcceptsReturn="True"
+                 FontFamily="Consolas" FontSize="12"
+                 Background="#0C0E0F" Foreground="#C8D3D9" BorderBrush="#2A2D2E" BorderThickness="1" Padding="8,6"
+                 TextWrapping="NoWrap" FlowDirection="LeftToRight"
+                 VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto"/>
+
+        <DockPanel Grid.Row="1" Margin="0,10,0,0" LastChildFill="False">
+            <CheckBox x:Name="FollowBox" DockPanel.Dock="Left" Content="{loc:T Log_Follow}" IsChecked="True" VerticalAlignment="Center"/>
+            <TextBlock x:Name="FolderText" DockPanel.Dock="Left" Margin="16,0,0,0" VerticalAlignment="Center"
+                       Foreground="#8899A6" FontSize="11.5"/>
+            <Button DockPanel.Dock="Right" Content="{loc:T Btn_Close}" MinWidth="90" Margin="10,0,0,0" IsCancel="True" Click="Close_Click"/>
+            <Button x:Name="FolderButton" DockPanel.Dock="Right" Content="{loc:T Log_OpenFolder}" Margin="10,0,0,0" Click="OpenFolder_Click"/>
+            <Button DockPanel.Dock="Right" Content="{loc:T Log_CopyAll}" MinWidth="90" Click="Copy_Click"/>
+        </DockPanel>
+    </Grid>
+</Window>
