@@ -52,6 +52,34 @@ in this guide were made in demo mode with simulated radios.*
   from the PC. A radio that is already in use by another console may refuse a
   second one.
 
+### How everything is connected
+
+![The PC and the radios on one Ethernet switch](screenshots/network-setup.svg)
+
+RadioDeck needs no server, no gateway and no audio cabling. The PC and the
+radios are plugged into the same Ethernet network, and the program calls each
+radio directly over it. The audio, PTT and the frequency commands all travel
+over that one network.
+
+1. Connect the Ethernet (LAN) port of every receiver, transmitter or
+   transceiver to the switch.
+2. Connect the PC to the same switch.
+3. Give the PC a fixed IP address in the network of the radios: Windows
+   Settings → Network & internet → Ethernet → IP assignment → **Edit** →
+   *Manual*. With radios at `192.0.2.10` to `192.0.2.13`, for example, use
+   `192.0.2.100` and the subnet mask `255.255.255.0`.
+4. Check every unit with `ping` from the PC.
+5. Plug the headset into the PC.
+
+The addresses in the picture are examples; use those of your own radios.
+Every unit has its own address: a separate receiver and transmitter need two,
+a transceiver needs one.
+
+The PC may also reach the radios through a router, as long as SIP (UDP 5060),
+the audio (RTP, UDP) and SNMP (UDP 161) pass in both directions. Nothing on
+this network is encrypted, so keep it closed; see
+[Network security](../README.md#network-security) in the README.
+
 No radio at hand? The program has a demo mode with simulated radios, see
 [The first start](#3-the-first-start).
 

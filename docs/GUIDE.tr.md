@@ -53,6 +53,33 @@ resimler demo modunda, benzetilmiş telsizlerle hazırlanmıştır.*
   çağrıya izin vermelidir. Başka bir konsolun kullandığı telsiz ikinci bir
   çağrıyı reddedebilir.
 
+### Bağlantı şeması
+
+![Bilgisayar ve telsizler aynı Ethernet switch üzerinde](screenshots/tr/network-setup.svg)
+
+RadioDeck için sunucu, ağ geçidi ya da ses kablosu gerekmez. Bilgisayar ve
+telsizler aynı Ethernet ağına takılır, program her telsizi bu ağ üzerinden
+doğrudan arar. Ses, PTT ve frekans komutlarının hepsi bu tek ağdan geçer.
+
+1. Her alıcının, vericinin ya da alıcı-vericinin Ethernet (LAN) portunu
+   switch'e bağlayın.
+2. Bilgisayarı aynı switch'e bağlayın.
+3. Bilgisayara telsizlerin ağında sabit bir IP adresi verin: Windows Ayarlar →
+   Ağ ve internet → Ethernet → IP ataması → **Düzenle** → *El ile*. Örneğin
+   telsizler `192.0.2.10` – `192.0.2.13` ise bilgisayara `192.0.2.100`
+   adresini ve `255.255.255.0` alt ağ maskesini verin.
+4. Bilgisayardan her cihaza `ping` atarak bağlantıyı deneyin.
+5. Kulaklığı bilgisayara takın.
+
+Resimdeki adresler örnektir; kendi telsizlerinizin adreslerini kullanın. Her
+cihazın kendi adresi vardır: ayrı alıcı ve verici için iki adres, alıcı-verici
+için tek adres gerekir.
+
+Bilgisayar telsizlere bir yönlendirici üzerinden de ulaşabilir; bunun için
+SIP (UDP 5060), ses (RTP, UDP) ve SNMP (UDP 161) iki yönde de geçebilmelidir.
+Bu ağdaki hiçbir şey şifreli değildir, ağı kapalı tutun; bkz. README'deki
+[Network security](../README.md#network-security) bölümü.
+
 Elinizde telsiz yok mu? Programın benzetilmiş telsizlerle çalışan bir demo
 modu vardır, bkz. [Programı ilk kez açma](#3-programı-ilk-kez-açma).
 

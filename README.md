@@ -95,6 +95,18 @@ SELCAL, recording.
 - A headset or microphone and speakers
 - To build: the .NET 8 SDK. A self-contained release needs nothing installed.
 
+## Network setup
+
+![The PC and the radios on one Ethernet switch](docs/screenshots/network-setup.svg)
+
+The PC and the radios are plugged into the same Ethernet network, and
+RadioDeck calls each radio directly over it: no server, no gateway and no
+audio cabling. Every receiver, transmitter or transceiver has its own IP
+address, and the PC needs an address in the same network (or a route to it).
+The addresses in the picture are examples. The
+[first setup guide](docs/GUIDE.md#how-everything-is-connected) lists the
+steps.
+
 ## Getting started
 
 The [first setup guide](docs/GUIDE.md) shows these steps with pictures.
@@ -436,6 +448,9 @@ pencereleri ve düğmeleri, ilk bağlantı denemesini adım adım anlatır.
 - Arayüz 34 dilde kullanılabilir; Türkçe dahildir. Dil, Ayarlar → Genel →
   Dil bölümünden seçilir; "Otomatik" Windows dilini izler. Çeviriler makineyle
   yapılmıştır, esas alınan dil İngilizcedir.
+- Bağlantı: bilgisayar ve telsizler aynı Ethernet ağına takılır, program
+  telsizleri doğrudan arar; sunucu ya da ses kablosu gerekmez. Şema ve adımlar
+  [rehberde](docs/GUIDE.tr.md#bağlantı-şeması).
 - 1–8 telsiz; her telsizin adı, IP adresleri ve ayarları Ayarlar → Telsizler
   sekmesinden girilir.
 - İki görünüm: klasik (uzun kartlar) ve ızgara (ilk satırda dört telsiz,
