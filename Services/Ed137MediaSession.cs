@@ -174,8 +174,8 @@ internal sealed class Ed137MediaSession : VoIPMediaSession
     private void AddR2sAttributes(SDP sdp)
     {
         // SIPSorcery writes the "extra attribute" lists verbatim, one SDP line per entry,
-        // so every entry must be a complete line including the "a=" prefix. (Version 1
-        // omitted the prefix and sent lines a strict SDP parser rejects.)
+        // so every entry must be a complete line including the "a=" prefix; without it
+        // a strict SDP parser rejects the lines.
         var periodAttr = $"a=R2S-KeepAlivePeriod:{KeepAlivePeriodMs}";
         var multiplierAttr = $"a=R2S-KeepAliveMultiplier:{KeepAliveMultiplier}";
         const string ptimeAttr = "a=ptime:20";

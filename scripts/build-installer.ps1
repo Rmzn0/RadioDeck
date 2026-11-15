@@ -76,7 +76,7 @@ $hash = (Get-FileHash -LiteralPath $appDll -Algorithm SHA256).Hash
   'Protection: Obfuscar (application assembly only)',
   "Application DLL SHA256: $hash",
   'PTT/media/call lifecycle regression checks: passed against normal and protected DLLs',
-  'Over-air audio/hardware acceptance: not performed'
+  'Hardware verification: see README, "Verification status"'
 ) | Set-Content -LiteralPath (Join-Path $output 'BUILD-INFO.txt') -Encoding UTF8
 
 Write-Host "Building installer with: $iscc"

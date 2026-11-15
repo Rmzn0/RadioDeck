@@ -3,7 +3,7 @@ using RadioDeck.Models;
 namespace RadioDeck.Services;
 
 /// <summary>
-/// Brings any stored configuration (including version 1 files with the fixed
+/// Brings any stored configuration (including early files with the fixed
 /// Localizer/Glidepath pair) to the current shape. Deterministic and idempotent.
 /// </summary>
 public static class ConfigMigrations
@@ -21,7 +21,7 @@ public static class ConfigMigrations
         if (cfg.Security is null) { cfg.Security = new SecurityConfig(); changed = true; }
         if (cfg.Radios is null) { cfg.Radios = new List<SiteConfig>(); changed = true; }
 
-        // Version 1 -> 2: the two fixed sites become the first two radios.
+        // Fixed pair -> radio list: the two fixed sites become the first two radios.
         if (cfg.Localizer is not null || cfg.Glidepath is not null)
         {
             if (cfg.Radios.Count == 0)
@@ -78,11 +78,11 @@ public static class ConfigMigrations
     {
         var radio = legacy.Clone();
         radio.Id = id;
-        // Version 1 always showed the fixed titles LOCALIZER / GLIDEPATH regardless of the stored name.
+        // The fixed pair was always shown as LOCALIZER / GLIDEPATH regardless of the stored name.
         radio.Name = fallbackName;
         radio.Profile = RadioProfile.BasicId;
         radio.LinkMode = nameof(RadioLinkMode.Separate);
-        // Version 1 displayed 123.000 as a placeholder; it is not a real reading.
+        // Early files stored 123.000 as a placeholder; it is not a real reading.
         if (radio.Frequency?.Trim() == "123.000") radio.Frequency = "";
 
         var defaults = AppConfig.CreateDefault().Radios.First(r => r.Id == id);
@@ -160,7 +160,7 @@ public static class ConfigMigrations
 
         if (string.IsNullOrWhiteSpace(audio.Codec)) { audio.Codec = "PCMA"; changed = true; }
 
-        // Early version 1 files had the noise gate hidden and effectively off. Enable it
+        // Early files had the noise gate hidden and effectively off. Enable it
         // once; a later explicit choice in Settings is preserved.
         if (!audio.NoiseGateConfigured)
         {

@@ -19,7 +19,7 @@ public sealed class AppConfig
     public ConnectionConfig Connection { get; set; } = new();
     public SecurityConfig Security { get; set; } = new();
 
-    // Version 1 files stored exactly two fixed sites. They are read once, converted
+    // Early configuration files stored exactly two fixed sites. They are read once, converted
     // into Radios by ConfigMigrations and never written again.
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public SiteConfig? Localizer { get; set; }
@@ -64,7 +64,7 @@ public sealed class SiteConfig
     /// <summary>Separate | Transceiver | RxOnly, see <see cref="RadioLinkMode"/>.</summary>
     public string LinkMode { get; set; } = nameof(RadioLinkMode.Separate);
 
-    // Kept for version 1 files: used when RxHost/TxHost are empty.
+    // Kept for early configuration files: used when RxHost/TxHost are empty.
     public string SipHost { get; set; } = "";
     public int SipPort { get; set; } = 5060;
 

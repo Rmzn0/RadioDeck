@@ -77,7 +77,7 @@ public sealed class RadioProfile
 
     public static IReadOnlyList<RadioProfile> All { get; } = new[] { Basic, Ed137B, Ed137C };
 
-    /// <summary>Unknown ids fall back to the basic profile, the behaviour of version 1.</summary>
+    /// <summary>Unknown ids fall back to the basic profile, which is also what files without a profile get.</summary>
     public static RadioProfile Get(string? id) =>
         All.FirstOrDefault(p => string.Equals(p.Id, id?.Trim(), StringComparison.OrdinalIgnoreCase)) ?? Basic;
 
