@@ -5,8 +5,7 @@ with SIP, exchanges G.711 A-law audio over RTP with ED-137 style signalling
 (R2S keepalives, PTT in the RTP header extension) and gives the operator
 push-to-talk, monitoring and frequency control for **one to eight radios**.
 
-It was written for flight inspection work (localizer and glide path
-frequencies) and has been tested on Jotron radios. Profiles for generic ED-137
+Has been tested on Jotron radios. Profiles for generic ED-137
 radios are included but have not been tested on hardware.
 
 ![RadioDeck with two radios connected](docs/screenshots/radiodeck-live.png)
