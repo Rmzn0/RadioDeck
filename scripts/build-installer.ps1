@@ -50,11 +50,16 @@ if (!(Get-Command dotnet -ErrorAction SilentlyContinue) -or !(dotnet --list-sdks
 }
 dotnet run --project (Join-Path $root 'tests\PttRegression\PttRegression.csproj') -c Release | Out-Host
 if ($LASTEXITCODE -ne 0) { throw "Regression checks failed; installer was not updated." }
-& (Join-Path $root "scripts\\obfuscate.ps1") -Runtime $Runtime | Out-Host
 
-$output = Join-Path $root "artifacts\obf\$Runtime"
+# Publish into a clean folder so that no file of an earlier build ends up in the installer.
+$output = Join-Path $root "artifacts\publish\$Runtime"
+if (Test-Path -LiteralPath $output) { Remove-Item -LiteralPath $output -Recurse -Force }
+& (Join-Path $root "scripts\\publish.ps1") -Runtime $Runtime | Out-Host
+Remove-Item -Force -ErrorAction SilentlyContinue (Join-Path $output "*.pdb")
+
 $appDll = Join-Path $output 'RadioDeck.dll'
-# Exercise the actual protected DLL, not just the unprotected build, before packaging.
+if (!(Test-Path -LiteralPath $appDll)) { throw "Publish output not found: $appDll" }
+# Exercise the published DLL that goes into the installer, not just the test build.
 $testOutput = Join-Path $root 'tests\PttRegression\bin\Release\net8.0-windows10.0.17763.0'
 $stagedTest = Join-Path $output 'PttRegression.dll'
 if (Test-Path -LiteralPath $stagedTest) { throw "Unexpected staged test file: $stagedTest" }
@@ -62,7 +67,7 @@ try {
   Copy-Item -LiteralPath (Join-Path $testOutput 'PttRegression.dll') -Destination $stagedTest
   dotnet exec --runtimeconfig (Join-Path $testOutput 'PttRegression.runtimeconfig.json') `
     --depsfile (Join-Path $testOutput 'PttRegression.deps.json') $stagedTest | Out-Host
-  if ($LASTEXITCODE -ne 0) { throw "Protected regression checks failed; installer was not updated." }
+  if ($LASTEXITCODE -ne 0) { throw "Regression checks against the published DLL failed; installer was not updated." }
 }
 finally {
   Remove-Item -LiteralPath $stagedTest -Force -ErrorAction SilentlyContinue
@@ -73,9 +78,8 @@ $hash = (Get-FileHash -LiteralPath $appDll -Algorithm SHA256).Hash
   "RadioDeck $version",
   "Built: $(Get-Date -Format o)",
   "Runtime: $Runtime (self-contained)",
-  'Protection: Obfuscar (application assembly only)',
   "Application DLL SHA256: $hash",
-  'PTT/media/call lifecycle regression checks: passed against normal and protected DLLs',
+  'Regression checks: passed against the test build and the published DLL',
   'Hardware verification: see README, "Verification status"'
 ) | Set-Content -LiteralPath (Join-Path $output 'BUILD-INFO.txt') -Encoding UTF8
 

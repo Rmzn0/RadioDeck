@@ -10,7 +10,6 @@ publish/
 # Local tool folders (everything starting with a dot, except what the project needs)
 /.*/
 !/.github/
-!/.config/
 
 # Local working files that are not part of the project
 /local/

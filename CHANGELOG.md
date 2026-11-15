@@ -109,6 +109,7 @@ original file is kept as `config.v1-backup.json`.
 
 ### Removed
 - Unused code, the second installer script and the embedded fixed PIN.
+- The obfuscation step of the installer build.
 
 ### Verification
 - The regression suite (75 checks) covers PTT arbitration for up to eight

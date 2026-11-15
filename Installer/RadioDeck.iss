@@ -5,8 +5,8 @@
 #define AppName "RadioDeck"
 #define AppExeName "RadioDeck.exe"
 
-; Update this if you publish/obfuscate to a different runtime folder.
-#define SourceDir "..\\artifacts\\obf\\win-x64"
+; Update this if you publish to a different runtime folder.
+#define SourceDir "..\\artifacts\\publish\\win-x64"
 
 [Setup]
 AppId={{CBDB850C-C1E9-412A-B2BB-1D31851EB450}

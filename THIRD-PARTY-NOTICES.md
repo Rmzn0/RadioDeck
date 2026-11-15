@@ -43,7 +43,6 @@ dotnet list .\RadioDeck.csproj package --include-transitive
 | Tool | License |
 |---|---|
 | .NET 8 SDK | MIT |
-| Obfuscar (optional) | MIT |
 | Inno Setup (optional installer; its setup program becomes part of the installer file) | Inno Setup License, https://jrsoftware.org/files/is/license.txt |
 
 ## Standards and names
