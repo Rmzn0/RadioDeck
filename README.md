@@ -180,9 +180,10 @@ steady noise around the microphone: engines, fans, wind. *Normal* lowers it by
 about 12 dB, *Strong* by about 18 dB at the price of thinner speech. It adds
 20 ms of delay. It follows the noise during the gaps between words, so it
 needs a second or two after the noise changes. It was measured with test
-signals, not tuned by ear on a radio channel: listen to the result on a second
-receiver before relying on it. A close-talking, noise-cancelling headset
-microphone still does more than any filter.
+signals and checked by ear on Jotron radios; with another radio, microphone or
+kind of noise, listen to the result on a second receiver before relying on it.
+A close-talking, noise-cancelling headset microphone still does more than any
+filter.
 
 **Noise gate** (on by default) sends clean silence while nobody speaks. The
 frames leading up to a word are sent when the gate opens, so the beginning is
