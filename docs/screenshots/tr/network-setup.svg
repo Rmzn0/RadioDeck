@@ -24,11 +24,11 @@
 
   <!-- Radio groups -->
   <rect x="700" y="90" width="260" height="160" rx="10" fill="#1b2228" stroke="#2f3b45"/>
-  <text x="716" y="116" font-size="15" font-weight="700" fill="#e6edf3">Telsiz 1 · LOCALIZER</text>
+  <text x="716" y="116" font-size="15" font-weight="700" fill="#e6edf3">Telsiz 1</text>
   <path d="M936 100 v20 M928 100 l8 9 l8 -9" fill="none" stroke="#9aa7b2" stroke-width="2" stroke-linecap="round"/>
 
   <rect x="700" y="280" width="260" height="160" rx="10" fill="#1b2228" stroke="#2f3b45"/>
-  <text x="716" y="306" font-size="15" font-weight="700" fill="#e6edf3">Telsiz 2 · GLIDEPATH</text>
+  <text x="716" y="306" font-size="15" font-weight="700" fill="#e6edf3">Telsiz 2</text>
   <path d="M936 290 v20 M928 290 l8 9 l8 -9" fill="none" stroke="#9aa7b2" stroke-width="2" stroke-linecap="round"/>
 
   <!-- Cables -->
